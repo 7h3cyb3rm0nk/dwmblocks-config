@@ -56,29 +56,29 @@ static int returnStatus = 0;
 
 // opens process *cmd and stores output in *output
 void getcmd(const Block *block, char *output) {
-  strcpy(output, block->icon);
+  // initalize output array to null
+  output[0] = '\0';
   FILE *cmdf = popen(block->command, "r");
   if (!cmdf)
     return;
-  int i = strlen(block->icon);
-  fgets(output + i, CMDLENGTH - i - delimLen, cmdf);
-  i = strlen(output);
-  if (i == 0) {
-    // return if block and command output are both empty
-    pclose(cmdf);
-    return;
+  int i;
+  char cmd_output[CMDLENGTH];
+  if (fgets(cmd_output, CMDLENGTH - delimLen, cmdf) != NULL) {
+    int len = strlen(cmd_output);
+
+    if (len > 0 && cmd_output[len - 1] == '\n') {
+      cmd_output[len - 1] = '\0';
+    }
+
+    strcpy(output, block->icon);
+    strcat(output, cmd_output);
+    if (delim[0] != '\0') {
+      strcat(output, delim);
+    }
   }
-  // only chop off newline if one is present at the end
-  i = output[i - 1] == '\n' ? i - 1 : i;
-  if (delim[0] != '\0') {
-    strncpy(output + i, delim, delimLen);
-  } else
-    output[i++] = '\0';
+
   pclose(cmdf);
   // hide block when cmd output is empty
-  if (strlen(output) == strlen(block->icon)) {
-    output[0] = '\0';
-  }
 }
 
 void getcmds(int time) {
