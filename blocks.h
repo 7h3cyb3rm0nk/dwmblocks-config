@@ -8,10 +8,10 @@ static const Block blocks[] = {
     {"", "cat /sys/class/power_supply/BAT1/capacity", 5, 0},
     {"",
      "cat /sys/class/power_supply/BAT1/status| grep Charging | sed "
-     "s/Charging/chrgng/g ",
+     "s/Charging//g ",
      5, 0},
     {"  ",
-     "nmcli dev | grep -E 'wlp45s0' | awk '{if ($NF != \'--\') print $NF}'", 7,
+     "nmcli dev | grep -E 'wlp45s0' | awk '{if ($NF != \"--\" ) print $NF}'", 7,
      0},
 };
 
